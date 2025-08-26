@@ -5,14 +5,15 @@ import pandas as pd
 import streamlit as st
 import matplotlib.pyplot as plt
 
-st.set_page_config(page_title="Scaler Playground + Quick EDA", page_icon="🧪", layout="wide")
+st.set_page_config(page_title="Scaler Playground + Quick EDA + Time Series", page_icon="🧪", layout="wide")
 
-st.title("🧪 Scaler Playground + 📊 Quick EDA")
-st.caption("Upload a fitted scaler (.joblib) or explore a CSV dataset.")
+st.title("🧪 Scaler Playground + 📊 Quick EDA + 📅 Time Series")
+st.caption("Upload a fitted scaler (.joblib), explore datasets, and visualize trends by date/year.")
 
 with st.sidebar:
     st.header("Navigation")
-    page = st.radio("Go to", ["Scaler Playground", "CSV EDA", "About"])
+    page = st.radio("Go to", ["Scaler Playground", "CSV EDA", "📅 Time Series Visualization", "About"])
+
 
 # --- Helpers ---
 def infer_feature_count(scaler):
@@ -27,6 +28,7 @@ def get_feature_names(scaler, n):
     if hasattr(scaler, "feature_names_in_"):
         return list(scaler.feature_names_in_)
     return [f"f{i+1}" for i in range(n)]
+
 
 # --- Pages ---
 if page == "Scaler Playground":
@@ -112,6 +114,7 @@ if page == "Scaler Playground":
                     except Exception as e:
                         st.error(f"Batch transform failed: {e}")
 
+
 elif page == "CSV EDA":
     st.header("Quick EDA")
     csv_file = st.file_uploader("Upload CSV", type=["csv"], key="eda_csv")
@@ -136,10 +139,54 @@ elif page == "CSV EDA":
             else:
                 st.info("Not enough numeric columns for correlation heatmap.")
 
+
+elif page == "📅 Time Series Visualization":
+    st.header("📅 Time Series Visualization")
+
+    file = st.file_uploader("Upload a CSV with a Date column", type=["csv"], key="ts_csv")
+    if file:
+        try:
+            df = pd.read_csv(file, parse_dates=["Date"])
+        except Exception as e:
+            st.error(f"Error reading file: {e}")
+            st.stop()
+
+        st.write("Preview:", df.head())
+
+        # Extract year & month
+        df["Year"] = df["Date"].dt.year
+        df["Month"] = df["Date"].dt.to_period("M")
+
+        # Sidebar year filter
+        years = sorted(df["Year"].unique())
+        selected_years = st.sidebar.multiselect("Select Year(s)", years, default=years)
+
+        df_filtered = df[df["Year"].isin(selected_years)]
+
+        # Choose column to plot
+        numeric_cols = df_filtered.select_dtypes(include=["number"]).columns.tolist()
+        if numeric_cols:
+            col_to_plot = st.selectbox("Select numeric column to visualize", numeric_cols)
+
+            # Monthly trend
+            trend = df_filtered.groupby("Month")[col_to_plot].mean()
+
+            st.subheader("Monthly Trend")
+            st.line_chart(trend)
+
+            # Yearly summary
+            yearly = df_filtered.groupby("Year")[col_to_plot].mean()
+            st.subheader("Yearly Summary")
+            st.bar_chart(yearly)
+        else:
+            st.warning("No numeric columns found to visualize.")
+
+
 else:
     st.header("About")
     st.markdown("""
     This app lets you:
     - Upload a saved scaler (`.joblib`) and transform new data.
     - Upload a CSV for quick exploratory analysis.
+    - 📅 Visualize time series data by date and year.
     """)
