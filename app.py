@@ -140,8 +140,8 @@ elif page == "CSV EDA":
                 st.info("Not enough numeric columns for correlation heatmap.")
 
 
-elif page == "📅 Time Series Visualization":
-    st.header("📅 Time Series Visualization")
+elif page == " Time Series Visualization":
+    st.header(" Time Series Visualization")
 
     file = st.file_uploader("Upload a CSV with a Date column", type=["csv"], key="ts_csv")
     if file:
