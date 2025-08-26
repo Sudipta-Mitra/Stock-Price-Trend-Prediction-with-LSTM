@@ -63,7 +63,4 @@ if st.button("Predict"):
     else:
         st.warning("⚠️ Please enter historical closing prices.")
 
-# Instructions for running the app
-st.markdown("""
----
 
