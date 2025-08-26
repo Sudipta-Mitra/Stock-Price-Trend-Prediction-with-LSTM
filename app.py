@@ -188,5 +188,5 @@ else:
     This app lets you:
     - Upload a saved scaler (`.joblib`) and transform new data.
     - Upload a CSV for quick exploratory analysis.
-    - 📅 Visualize time series data by date and year.
+    -  Visualize time series data by date and year.
     """)
