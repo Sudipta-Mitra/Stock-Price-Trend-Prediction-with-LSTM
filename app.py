@@ -67,15 +67,3 @@ if st.button("Predict"):
 st.markdown("""
 ---
 
-### 🛠️ How to Run This Streamlit App Locally:
-
-1. Make sure the following files are in the same directory:
-   - `app.py`
-   - `lstm_stock_model.h5`
-   - `scaler.pkl`
-2. Open your terminal or command prompt.
-3. Navigate to the project directory.
-4. Run the app using:
-
-```bash
-streamlit run app.py
