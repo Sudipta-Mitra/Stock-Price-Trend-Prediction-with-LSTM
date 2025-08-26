@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 
 st.set_page_config(page_title="Scaler Playground + Quick EDA + Time Series", page_icon="🧪", layout="wide")
 
-st.title("🧪 Scaler Playground + 📊 Quick EDA + 📅 Time Series")
+st.title("Stock-Price-Trend-Prediction-with-LSTM")
 st.caption("Upload a fitted scaler (.joblib), explore datasets, and visualize trends by date/year.")
 
 with st.sidebar:
