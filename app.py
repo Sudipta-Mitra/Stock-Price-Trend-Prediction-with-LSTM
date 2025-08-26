@@ -1,66 +1,58 @@
-import tensorflow as tf
 import streamlit as st
+import tensorflow as tf
 from sklearn.preprocessing import MinMaxScaler
 import numpy as np
 import joblib
 import pandas as pd
 
-# Load the trained model and scaler
+# Load trained model and scaler
 try:
     model = tf.keras.models.load_model('lstm_stock_model.h5')
     scaler = joblib.load('scaler.pkl')
 except Exception as e:
-    st.error(f"Error loading model or scaler: {e}")
+    st.error(f"❌ Failed to load model or scaler: {e}")
     st.stop()
 
-# Time step used during model training
-time_step = 60
+# Constants
+TIME_STEP = 60
 
-# Streamlit App Title and Instructions
+# App UI
 st.title("📈 Stock Price Prediction with LSTM")
-st.write("Enter the last 60 days of historical stock closing prices (comma-separated) to predict the next day's closing price.")
+st.write("Enter the last 60 days of stock closing prices (comma-separated) to predict the next day's closing price.")
 
-# Input area for user to paste historical prices
-historical_prices_input = st.text_area("Enter historical closing prices (comma-separated):")
+# User input
+user_input = st.text_area("Enter historical closing prices (comma-separated):")
 
-# Predict button logic
+# On predict button
 if st.button("Predict"):
-    if historical_prices_input:
-        try:
-            # Convert input string to float list
-            historical_prices = np.array([float(price.strip()) for price in historical_prices_input.split(',')])
-
-            if len(historical_prices) != time_step:
-                st.warning(f"⚠️ Please enter exactly {time_step} historical closing prices.")
-            else:
-                # Create dummy array for 5 features; only 'Close' will be filled
-                dummy_data = np.zeros((time_step, 5))
-                dummy_data[:, 0] = historical_prices  # Assuming 'Close' was the first feature
-
-                # Scale input
-                scaled_input = scaler.transform(dummy_data)
-
-                # Reshape for LSTM: (samples, timesteps, features)
-                scaled_input = scaled_input[:, 0].reshape(1, time_step, 1)
-
-                # Make prediction
-                scaled_prediction = model.predict(scaled_input)
-
-                # Create dummy for inverse scaling
-                dummy_prediction_data = np.zeros((scaled_prediction.shape[0], 5))
-                dummy_prediction_data[:, 0] = scaled_prediction[:, 0]
-
-                # Inverse transform to get actual predicted price
-                predicted_price = scaler.inverse_transform(dummy_prediction_data)[:, 0]
-
-                # Display prediction
-                st.success(f"💹 Predicted next day's closing price: **${predicted_price[0]:.2f}**")
-
-        except ValueError:
-            st.error("❌ Invalid input. Please enter a comma-separated list of numbers.")
-        except Exception as e:
-            st.error(f"❌ An error occurred during prediction: {e}")
-    else:
+    if not user_input:
         st.warning("⚠️ Please enter historical closing prices.")
+    else:
+        try:
+            # Parse and validate input
+            prices = [float(p.strip()) for p in user_input.split(',')]
+            if len(prices) != TIME_STEP:
+                st.warning(f"⚠️ Exactly {TIME_STEP} values required. You entered {len(prices)}.")
+            else:
+                # Prepare dummy 5-feature input for scaler
+                dummy_data = np.zeros((TIME_STEP, 5))
+                dummy_data[:, 0] = prices  # 'Close' assumed as first feature
 
+                # Scale and reshape input
+                scaled = scaler.transform(dummy_data)
+                input_sequence = scaled[:, 0].reshape(1, TIME_STEP, 1)
 
+                # Predict
+                scaled_prediction = model.predict(input_sequence)
+
+                # Prepare dummy data for inverse transformation
+                inverse_dummy = np.zeros((1, 5))
+                inverse_dummy[:, 0] = scaled_prediction[:, 0]
+                predicted_price = scaler.inverse_transform(inverse_dummy)[:, 0]
+
+                # Show result
+                st.success(f"💰 Predicted closing price: **${predicted_price[0]:.2f}**")
+        except ValueError:
+            st.error("❌ Invalid input. Please enter a list of numbers separated by commas.")
+        except Exception as e:
+            st.error(f"❌ Prediction failed: {e}")
