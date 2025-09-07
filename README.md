@@ -32,12 +32,12 @@ It also includes a **Scaler Playground + Quick EDA** tool to explore datasets an
 
 ## 📂 Project Structure  
 
-📦 stock-price-prediction
-┣ 📜 app.py # Streamlit main app
-┣ 📜 scaler.joblib # Example pre-trained scaler
-┣ 📜 requirements.txt # Dependencies
-┣ 📜 README.md # Project documentation
-┗ 📂 data # Sample datasets
+- 📦 stock-price-prediction
+- ┣ 📜 app.py # Streamlit main app
+- ┣ 📜 scaler.joblib # Example pre-trained scaler
+- ┣ 📜 requirements.txt # Dependencies
+- ┣ 📜 README.md # Project documentation
+- ┗ 📂 data # Sample datasets
 
 
 ## ▶️ How to Run Locally  
