@@ -71,7 +71,7 @@ streamlit run app.py
 
 ## 🌐 Live Demo
 👉 Try it out here: [Stock Price Trend Prediction with LSTM](https://stock-price-trend-prediction-with-lstm-nnddxr3qe5z8kwxjqr9ddf.streamlit.app)
-
+![1st page](img.png)
 ## 📧 Contact
 For questions or collaboration, feel free to reach out:
 
