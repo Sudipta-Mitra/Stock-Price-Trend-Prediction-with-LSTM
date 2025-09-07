@@ -49,16 +49,16 @@ It also includes a **Scaler Playground + Quick EDA** tool to explore datasets an
 Create & activate a virtual environment
 
 
-python -m venv venv
-source venv/bin/activate   # On Mac/Linux
-venv\Scripts\activate      # On Windows
+- python -m venv venv
+- source venv/bin/activate   # On Mac/Linux
+- venv\Scripts\activate      # On Windows
 Install dependencies
 
 
-pip install -r requirements.txt
+- pip install -r requirements.txt
 Run the Streamlit app
 
-streamlit run app.py
+- streamlit run app.py
 
 ## 📊 Example Usage
 1. Upload a dataset (.csv)
